@@ -1,0 +1,27 @@
+.logoImage{
+    width: 300px;
+    height: 300px;
+}
+
+.header{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: start;
+    background-color: cadetblue;
+    padding: 10px;
+}
+
+.header > a{
+    font-size: 24px;
+}
+.error {
+    color: red;
+    font-size: 0.9em;
+    display: block;
+    margin-top: 4px;
+}
+
+.field-error {
+    border-color: red;
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{/fragments/bootstrap_imports.html::imports}"></th:block>
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <title>Book Advisor</title>
+</head>
+
+<body>
+    <div th:replace="~{/fragments/header.html::header}"></div>
+    <h1>Contacto</h1>
+    <form action="#" th:action="@{/public/contacta}" method="post" th:object="${formContacto}">
+        <label>Nombre:
+            <input type="text" th:field="*{nombre}" th:classappend="${#fields.hasErrors('nombre')} ? 'field-error'" />
+            <span class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+        </label>
+        <br />
+    
+        <label>Email:
+            <input type="email" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'field-error'" />
+            <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+        </label>
+        <br />
+    
+        <label>Tipo de Contacto:
+            <select th:field="*{tipoContacto}" th:classappend="${#fields.hasErrors('tipoContacto')} ? 'field-error'">
+                <option value="">-- Seleccione un tipo de contacto --</option>
+                <option th:each="t : ${T(com.example.book_advisor.model.TipoContacto).values()}" th:value="${t}"
+                    th:text="${t.displayName}"></option>
+            </select>
+            <span class="error" th:if="${#fields.hasErrors('tipoContacto')}" th:errors="*{tipoContacto}"></span>
+        </label>
+        <br />
+        
+        <label>Comentarios:
+            <input type="text" th:field="*{comentario}" th:classappend="${#fields.hasErrors('comentario')} ? 'field-error'" />
+            <span class="error" th:if="${#fields.hasErrors('comentario')}" th:errors="*{comentario}"></span>
+        </label>
+        <br />
+    
+        <label>
+            Acepta las condiciones
+            <input type="checkbox" th:field="*{acceptsConditions}"
+                th:classappend="${#fields.hasErrors('acceptsConditions')} ? 'field-error'" />
+            <span class="error" th:if="${#fields.hasErrors('acceptsConditions')}" th:errors="*{acceptsConditions}"></span>
+        </label>
+        <br />
+    
+        <input type="submit" value="Enviar" />
+        <span th:if="${message != null && message.isPresent()}" th:text="${message.get()}"></span>
+
+    </form>
+</body>
+
+</html>
+
+    

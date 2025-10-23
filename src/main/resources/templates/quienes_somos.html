@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{/fragments/bootstrap_imports.html::imports}"></th:block>
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <title>Book Advisor</title>
+</head>
+<body>
+    <div th:replace="~{/fragments/header.html::header}"></div>
+    <h1>Bienvenido/a a Nuesta Web</h1>
+    <img class="logoImage" src="/imgs/logo.jpg"/>
+    <p>©<span th:text="${anoActual}"></span></p>
+</body>
+</html>
