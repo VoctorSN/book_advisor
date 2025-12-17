@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Libros</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            padding: 8px 15px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-eliminar {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-nuevo {
+            margin-top: 10px;
+        }
+        .btn-eliminar:hover {
+            background-color: #da190b;
+        }
+        .btn-modificar, .btn-nuevo {
+            background-color: #2196F3;
+            color: white;
+        }
+        .btn-modificar:hover, .btn-nuevo:hover {
+            background-color: #0b7dda;
+        }
+        .filtro-container {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .filtro-container label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .filtro-container select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .filtro-container input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+            width: 250px;
+        }
+        .btn-filtrar {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-filtrar:hover {
+            background-color: #45a049;
+        }
+        .btn-limpiar {
+            background-color: #ff9800;
+            color: white;
+        }
+        .btn-limpiar:hover {
+            background-color: #e68900;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Listado de Libros</h1>
+
+    <div class="filtro-container">
+        <form action="/public/libros/" method="get">
+            <label for="filtroGenero">Filtrar por Género:</label>
+            <select id="filtroGenero" name="filtroGenero">
+                <option value="">Todos los géneros</option>
+                <option th:each="tem : ${tematicas}" 
+                        th:value="${tem}" 
+                        th:text="${tem.nombre}"
+                        th:selected="${filtroActual != null && filtroActual == tem}">
+                </option>
+            </select>
+            
+            <label for="filtroTitulo">Filtrar por Título:</label>
+            <input type="text" 
+                   id="filtroTitulo" 
+                   name="filtroTitulo" 
+                   placeholder="Buscar por título..."
+                   th:value="${filtroNombreActual}" />
+            
+            <button type="submit" class="btn btn-filtrar">Filtrar</button>
+            <a href="/public/libros/" class="btn btn-limpiar">Limpiar Filtros</a>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <td>Imagen</td>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Sinopsis</th>
+                <th>Idioma</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="libro : ${libros}">
+                <td th:text="${libro.id}"></td>
+                <td>
+                    <div th:if="${libro.imagen != null}" style="text-align: center; margin-bottom: 20px;">
+                        <img th:src="@{/imgs/{img}(img=${libro.imagen})}" alt="Portada del libro"
+                            style="max-width: 50px; max-height: 50px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" />      </div>
+                    <div th:unless="${libro.imagen != null}" style="text-align: center; margin-bottom: 20px;">
+                        <img th:src="@{/imgs/logo.jpg}" alt="Imagen por defecto"
+                            style="max-width: 50px; max-height: 50px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" />      </div>
+                </td>
+                <td>
+                    <a th:href="@{/public/libros/detalle(id=${libro.id})}" 
+                       style="text-decoration: none; color: #2196F3; cursor: pointer;"
+                       th:text="${libro.titulo}">
+                    </a>
+                </td>
+                <td th:text="${libro.autor}"></td>
+                <td th:text="${libro.sinopsis}"></td>
+                <td th:text="${libro.idioma.nombre}"></td>
+                <td>
+                    <a th:href="@{/public/libros/modificar(id=${libro.id})}" class="btn btn-modificar">Modificar</a>
+                    <a th:href="@{/public/libros/eliminar(id=${libro.id})}" class="btn btn-eliminar" 
+                       onclick="return confirm('¿Estás seguro de eliminar este libro?')">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/public/libros/nuevo}" class="btn btn-nuevo">Nuevo Libro</a>
+</body>
+
+</html>
