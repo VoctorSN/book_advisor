@@ -19,25 +19,36 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.book_advisor.model.Genero;
 import com.example.book_advisor.model.Idioma;
 import com.example.book_advisor.model.Libro;
-import com.example.book_advisor.services.LibrosService;
+import com.example.book_advisor.model.Usuario;
+import com.example.book_advisor.services.LibroService;
+import com.example.book_advisor.services.ValoracionService;
 
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/public/libros")
 public class LibrosController {
 
     @Autowired
-    private LibrosService service;
+    private LibroService service;
+    
+    @Autowired
+    private ValoracionService valoracionService;
 
     @GetMapping({"", "/"})
     public String listarLibros(
-            @RequestParam(required = false) Genero filtroGenero,
+            @RequestParam(required = false) Long filtroGenero,
             @RequestParam(required = false) String filtroTitulo,
+            HttpSession session,
             Model model) {
         
         // Establecer el filtro de temática en el servicio
         if (filtroGenero != null) {
-            service.setFiltroGenero(Optional.of(filtroGenero));
+            Genero genero = service.getGeneros().stream()
+                    .filter(g -> g.getId().equals(filtroGenero))
+                    .findFirst()
+                    .orElse(null);
+            service.setFiltroGenero(Optional.ofNullable(genero));
         } else {
             service.setFiltroGenero(Optional.empty());
         }
@@ -49,31 +60,41 @@ public class LibrosController {
             service.setFiltroTitulo(Optional.empty());
         }
         
-        model.addAttribute("libros", service.getLibrosOrdenados());
-        model.addAttribute("tematicas", Genero.values());
+        model.addAttribute("libros", service.convertirLibrosADTO(service.getLibrosOrdenados()));
+        model.addAttribute("tematicas", service.getGeneros());
         model.addAttribute("filtroActual", service.getFiltroGenero().orElse(null));
         model.addAttribute("filtroNombreActual", service.getFiltroTitulo().orElse(""));
         return "listLibros";
     }
     
     @GetMapping("/eliminar")
-    public String eliminarLibro(@RequestParam int id) {
+    public String eliminarLibro(@RequestParam Long id) {
         service.eliminarLibro(id);
         return "redirect:/public/libros/";
     }
 
     @GetMapping("/detalle")
-    public String verDetalle(@RequestParam int id, Model model) {
+    public String verDetalle(@RequestParam Long id, HttpSession session, Model model) {
         Libro libro = service.getLibroById(id);
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        
         model.addAttribute("libro", libro);
+        model.addAttribute("mediaValoracion", valoracionService.calcularMediaLibro(libro));
+        model.addAttribute("numeroVotos", valoracionService.contarValoraciones(libro));
+        
+        if (usuario != null) {
+            var valoracionUsuario = valoracionService.obtenerValoracion(usuario, libro);
+            model.addAttribute("valoracionUsuario", valoracionUsuario.orElse(null));
+        }
+        
         return "detalleLibro";
     }
 
     @GetMapping("/modificar")
-    public String mostrarFormularioModificar(@RequestParam int id, Model model) {
+    public String mostrarFormularioModificar(@RequestParam Long id, Model model) {
         Libro libro = service.getLibroById(id);
         model.addAttribute("libro", libro);
-        model.addAttribute("tematicas", Genero.values());
+        model.addAttribute("tematicas", service.getGeneros());
         model.addAttribute("idiomas", Idioma.values());
         return "formView";
     }
@@ -137,9 +158,9 @@ public class LibrosController {
     @GetMapping("/nuevo")
     public String nuevoLibro(Model model) {
         // Crear un libro vacío con ID 0 para indicar que es nuevo
-        Libro libroNuevo = new Libro(0, "", "", null, "", "", 0, null, null);
+        Libro libroNuevo = new Libro(null, "", "", null, "", "", 0, null, null);
         model.addAttribute("libro", libroNuevo);
-        model.addAttribute("tematicas", Genero.values());
+        model.addAttribute("tematicas", service.getGeneros());
         model.addAttribute("idiomas", Idioma.values());
         return "formView";
     }

@@ -4,12 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{/fragments/bootstrap_imports.html::imports}"></th:block>
+    <link rel="stylesheet" href="/css/styles.css">
     <title>Listado de Libros</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
@@ -94,6 +93,7 @@
 </head>
 
 <body>
+    <div th:replace="~{/fragments/header.html::header}"></div>
     <h1>Listado de Libros</h1>
 
     <div class="filtro-container">
@@ -102,9 +102,9 @@
             <select id="filtroGenero" name="filtroGenero">
                 <option value="">Todos los géneros</option>
                 <option th:each="tem : ${tematicas}" 
-                        th:value="${tem}" 
+                        th:value="${tem.id}" 
                         th:text="${tem.nombre}"
-                        th:selected="${filtroActual != null && filtroActual == tem}">
+                        th:selected="${filtroActual != null && filtroActual.id == tem.id}">
                 </option>
             </select>
             
@@ -124,7 +124,7 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <td>Imagen</td>
+                <th>Imagen</th>
                 <th>Título</th>
                 <th>Autor</th>
                 <th>Sinopsis</th>
@@ -151,7 +151,7 @@
                 </td>
                 <td th:text="${libro.autor}"></td>
                 <td th:text="${libro.sinopsis}"></td>
-                <td th:text="${libro.idioma.nombre}"></td>
+                <td th:text="${libro.idioma}"></td>
                 <td>
                     <a th:href="@{/public/libros/modificar(id=${libro.id})}" class="btn btn-modificar">Modificar</a>
                     <a th:href="@{/public/libros/eliminar(id=${libro.id})}" class="btn btn-eliminar" 

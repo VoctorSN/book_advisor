@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{/fragments/bootstrap_imports.html::imports}"></th:block>
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Listado de Géneros</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            padding: 8px 15px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-modificar {
+            background-color: #2196F3;
+            color: white;
+        }
+        .btn-modificar:hover {
+            background-color: #0b7dda;
+        }
+        .btn-eliminar {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-eliminar:hover {
+            background-color: #da190b;
+        }
+        .btn-nuevo {
+            background-color: #4CAF50;
+            color: white;
+            margin: 20px auto;
+            display: block;
+            width: 200px;
+            text-align: center;
+            padding: 12px;
+            font-size: 16px;
+        }
+        .btn-nuevo:hover {
+            background-color: #45a049;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="~{/fragments/header.html::header}"></div>
+    <div class="container">
+        <h1>📚 Listado de Géneros</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Número de Libros</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="genero : ${generos}">
+                    <td th:text="${genero.id}"></td>
+                    <td th:text="${genero.nombre}"></td>
+                    <td th:text="${genero.libros.size()}"></td>
+                    <td>
+                        <a th:href="@{/public/generos/modificar(id=${genero.id})}" class="btn btn-modificar">Modificar</a>
+                        <a th:href="@{/public/generos/eliminar(id=${genero.id})}" class="btn btn-eliminar" 
+                           onclick="return confirm('¿Estás seguro de eliminar este género? Se eliminarán también todos sus libros asociados.')">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <a th:href="@{/public/generos/nuevo}" class="btn btn-nuevo">➕ Nuevo Género</a>
+    </div>
+</body>
+
+</html>

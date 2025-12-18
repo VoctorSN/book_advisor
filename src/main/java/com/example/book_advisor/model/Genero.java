@@ -1,24 +1,34 @@
 package com.example.book_advisor.model;
 
-public enum Genero {
-    ACCION("Acción"),
-    COMEDIA("Comedia"),
-    DRAMA("Drama"),
-    AVENTURA("Aventura"),
-    CIENCIA_FICCION("Ciencia Ficción"),
-    TERROR("Terror"),
-    FANTASIA("Fantasía"),
-    THRILLER("Thriller"),
-    MISTERIO("Misterio"),
-    ROMANCE("Romance");
+import java.util.ArrayList;
+import java.util.List;
 
-    private final String nombre;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-    Genero(String nombre) {
-        this.nombre = nombre;
-    }
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+public class Genero {
 
-    public String getNombre() {
-        return nombre;
-    }
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long id;
+    private String nombre;
+    @ToString.Exclude
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="genero", fetch=FetchType.EAGER, orphanRemoval=true)
+    private List<Libro> libros = new ArrayList<>();
+
 }

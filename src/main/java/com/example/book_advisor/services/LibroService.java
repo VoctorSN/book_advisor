@@ -3,18 +3,19 @@ package com.example.book_advisor.services;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.book_advisor.DTO.LibroDTO;
 import com.example.book_advisor.model.Genero;
 import com.example.book_advisor.model.Libro;
 
-public interface LibrosService {
+public interface LibroService {
 
     public List<Libro> getLibros();
 
     public List<Libro> getLibrosOrdenados();
 
-    public Libro getLibroById(int id);
+    public Libro getLibroById(Long id);
 
-    public void eliminarLibro(int id);
+    public void eliminarLibro(Long id);
 
     public void actualizarLibro(Libro libro);
 
@@ -27,4 +28,8 @@ public interface LibrosService {
     public void setFiltroTitulo(Optional<String> filtro);
 
     public Optional<String> getFiltroTitulo();
+
+    public List<Genero> getGeneros();
+
+    public List<LibroDTO> convertirLibrosADTO(List<Libro> librosOrdenados);
 }

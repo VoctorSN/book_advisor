@@ -4,6 +4,16 @@
         <a class="nav-link active" th:href="@{/}">INICIO</a>
         <a class="nav-link active" th:href="@{/public/home}">QUIENES SOMOS</a>
         <a class="nav-link active" th:href="@{/public/libros}">LIBROS</a>
+        <a class="nav-link active" th:href="@{/public/generos}">GÉNEROS</a>
         <a class="nav-link active" th:href="@{/public/contacta}">CONTACTA</a>
+        
+        <div style="margin-left: auto; display: flex; gap: 10px;">
+            <span th:if="${session.usuario != null}" style="color: white; padding: 8px; display: flex; align-items: center;">
+                Hola, <strong th:text="${session.usuario.nombre}" style="margin-left: 5px;"></strong>
+            </span>
+            <a th:if="${session.usuario == null}" class="nav-link active" th:href="@{/auth/login}">INICIAR SESIÓN</a>
+            <a th:if="${session.usuario == null}" class="nav-link active" th:href="@{/auth/registro}">REGISTRARSE</a>
+            <a th:if="${session.usuario != null}" class="nav-link active" th:href="@{/auth/logout}">CERRAR SESIÓN</a>
+        </div>
     </nav>
 </header>
