@@ -1,19 +1,33 @@
 <!-- fragments/header.html -->
-<header th:fragment="header">
+<header th:fragment="header" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <nav class="navbar navbar-expand-sm header">
         <a class="nav-link active" th:href="@{/}">INICIO</a>
         <a class="nav-link active" th:href="@{/public/home}">QUIENES SOMOS</a>
+        
+        <!-- Rutas visibles solo si está autenticado -->
         <a class="nav-link active" th:href="@{/public/libros}">LIBROS</a>
         <a class="nav-link active" th:href="@{/public/generos}">GÉNEROS</a>
         <a class="nav-link active" th:href="@{/public/contacta}">CONTACTA</a>
         
-        <div style="margin-left: auto; display: flex; gap: 10px;">
-            <span th:if="${session.usuario != null}" style="color: white; padding: 8px; display: flex; align-items: center;">
-                Hola, <strong th:text="${session.usuario.nombre}" style="margin-left: 5px;"></strong>
+        <!-- Rutas para MANAGER y ADMIN -->
+        <a sec:authorize="hasAnyRole('MANAGER', 'ADMIN')" class="nav-link active" th:href="@{/public/libros/nuevo}">NUEVO LIBRO</a>
+        <a sec:authorize="hasAnyRole('MANAGER', 'ADMIN')" class="nav-link active" th:href="@{/public/generos/nuevo}">NUEVO GÉNERO</a>
+        
+        <!-- Rutas solo para ADMIN -->
+        <a sec:authorize="hasRole('ADMIN')" class="nav-link active" th:href="@{/admin/usuarios}">GESTIÓN USUARIOS</a>
+        
+        <div style="margin-left: auto; display: flex; gap: 10px; align-items: center;">
+            <!-- Usuario autenticado -->
+            <span sec:authorize="isAuthenticated()" style="color: white; padding: 8px;">
+                Hola, <strong sec:authentication="name" style="margin-left: 5px;"></strong>
             </span>
-            <a th:if="${session.usuario == null}" class="nav-link active" th:href="@{/auth/login}">INICIAR SESIÓN</a>
-            <a th:if="${session.usuario == null}" class="nav-link active" th:href="@{/auth/registro}">REGISTRARSE</a>
-            <a th:if="${session.usuario != null}" class="nav-link active" th:href="@{/auth/logout}">CERRAR SESIÓN</a>
+            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display: inline; margin: 0;">
+                <button type="submit" class="nav-link active" style="background: none; border: none; cursor: pointer; padding: 8px 16px;">CERRAR SESIÓN</button>
+            </form>
+            
+            <!-- Usuario NO autenticado -->
+            <a sec:authorize="isAnonymous()" class="nav-link active" th:href="@{/auth/login}">INICIAR SESIÓN</a>
+            <a sec:authorize="isAnonymous()" class="nav-link active" th:href="@{/auth/registro}">REGISTRARSE</a>
         </div>
     </nav>
 </header>

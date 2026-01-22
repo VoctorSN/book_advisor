@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modificar Libro</title>
+    <title>Modificar Libro</title><th:block th:replace="~{/fragments/bootstrap_imports.html::imports}"></th:block><link rel="stylesheet" href="/css/styles.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            max-width: 600px;
         }
         .form-group {
             margin-bottom: 15px;
@@ -58,6 +57,7 @@
     </style>
 </head>
 <body>
+    <div th:replace="~{/fragments/header.html::header}"></div>
     <h1>Modificar Libro</h1>
     
     <form th:action="@{/public/libros/actualizar}" method="post" enctype="multipart/form-data" th:object="${libro}">

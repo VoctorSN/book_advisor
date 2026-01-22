@@ -1,5 +1,6 @@
 package com.example.book_advisor.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +47,21 @@ public class ValoracionServiceImpl implements ValoracionService {
     @Override
     public Long contarValoraciones(Libro libro) {
         return valoracionRepository.countByLibro(libro);
+    }
+
+    @Override
+    public void eliminarValoracion(Usuario usuario, Libro libro) {
+        Optional<Valoracion> valoracion = valoracionRepository.findByUsuarioAndLibro(usuario, libro);
+        valoracion.ifPresent(v -> valoracionRepository.delete(v));
+    }
+
+    @Override
+    public List<Valoracion> obtenerValoracionesLibro(Libro libro) {
+        return valoracionRepository.findByLibro(libro);
+    }
+
+    @Override
+    public void eliminarValoracion(Long id) {
+        valoracionRepository.deleteById(id);
     }
 }

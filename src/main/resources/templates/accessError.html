@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{/fragments/bootstrap_imports.html::imports}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Acceso Denegado</title>
+    <style>
+        .error-container {
+            max-width: 600px;
+            margin: 100px auto;
+            text-align: center;
+            padding: 40px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .error-icon {
+            font-size: 80px;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+        .error-title {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .error-message {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .error-code {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 30px;
+        }
+        .btn-home {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn-home:hover {
+            background-color: #5568d3;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{/fragments/header.html::header}"></div>
+    
+    <div class="error-container">
+        <div class="error-icon">🚫</div>
+        <h1 class="error-title">Acceso Denegado</h1>
+        <p class="error-message" th:text="${errorMessage}">No tienes permisos para acceder a este recurso</p>
+        <p class="error-code">Error 403 - Forbidden</p>
+        <p style="color: #999; margin-bottom: 30px;">
+            Por favor, inicia sesión con una cuenta que tenga los permisos necesarios o contacta con un administrador.
+        </p>
+        <a th:href="@{/public/libros}" class="btn-home">Volver al Inicio</a>
+    </div>
+</body>
+</html>

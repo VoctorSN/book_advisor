@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{/fragments/bootstrap_imports.html::imports}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title th:text="${accion == 'nuevo' ? 'Nuevo Usuario' : 'Editar Usuario'}"></title>
+</head>
+<body>
+    <div th:replace="~{/fragments/header.html::header}"></div>
+    
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 th:text="${accion == 'nuevo' ? 'Nuevo Usuario' : 'Editar Usuario'}"></h3>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                        
+                        <form th:action="${accion == 'nuevo' ? '/admin/usuarios/guardar' : '/admin/usuarios/actualizar'}" 
+                              method="post">
+                            
+                            <input th:if="${accion == 'modificar'}" 
+                                   type="hidden" 
+                                   name="id" 
+                                   th:value="${usuario.id}">
+                            
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">Nombre de Usuario:</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="nombre" 
+                                       name="nombre" 
+                                       th:value="${usuario.nombre}"
+                                       required 
+                                       minlength="3">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="password" class="form-label">
+                                    Contraseña:
+                                    <span th:if="${accion == 'modificar'}" class="text-muted">(Dejar en blanco para no cambiar)</span>
+                                </label>
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="password" 
+                                       name="password"
+                                       th:required="${accion == 'nuevo'}"
+                                       minlength="4">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="rol" class="form-label">Rol:</label>
+                                <select class="form-select" 
+                                        id="rol" 
+                                        name="rol" 
+                                        required>
+                                    <option th:each="r : ${roles}" 
+                                            th:value="${r}" 
+                                            th:text="${r.name()}"
+                                            th:selected="${usuario.rol != null && usuario.rol == r}">
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save"></i> Guardar
+                                </button>
+                                <a th:href="@{/admin/usuarios/}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -91,7 +91,7 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Número de Libros</th>
-                    <th>Acciones</th>
+                    <th sec:authorize="hasRole('ADMIN')">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -99,7 +99,7 @@
                     <td th:text="${genero.id}"></td>
                     <td th:text="${genero.nombre}"></td>
                     <td th:text="${genero.libros.size()}"></td>
-                    <td>
+                    <td sec:authorize="hasRole('ADMIN')">
                         <a th:href="@{/public/generos/modificar(id=${genero.id})}" class="btn btn-modificar">Modificar</a>
                         <a th:href="@{/public/generos/eliminar(id=${genero.id})}" class="btn btn-eliminar" 
                            onclick="return confirm('¿Estás seguro de eliminar este género? Se eliminarán también todos sus libros asociados.')">Eliminar</a>
@@ -108,7 +108,7 @@
             </tbody>
         </table>
         
-        <a th:href="@{/public/generos/nuevo}" class="btn btn-nuevo">➕ Nuevo Género</a>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/public/generos/nuevo}" class="btn btn-nuevo">➕ Nuevo Género</a>
     </div>
 </body>
 

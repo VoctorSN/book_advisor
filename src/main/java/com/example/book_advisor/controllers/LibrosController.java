@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.book_advisor.model.Genero;
 import com.example.book_advisor.model.Idioma;
 import com.example.book_advisor.model.Libro;
-import com.example.book_advisor.model.Usuario;
 import com.example.book_advisor.services.LibroService;
+import com.example.book_advisor.services.UsuarioService;
 import com.example.book_advisor.services.ValoracionService;
-
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/public/libros")
@@ -34,12 +33,14 @@ public class LibrosController {
     
     @Autowired
     private ValoracionService valoracionService;
+    
+    @Autowired
+    private UsuarioService usuarioService;
 
     @GetMapping({"", "/"})
     public String listarLibros(
             @RequestParam(required = false) Long filtroGenero,
             @RequestParam(required = false) String filtroTitulo,
-            HttpSession session,
             Model model) {
         
         // Establecer el filtro de temática en el servicio
@@ -74,18 +75,17 @@ public class LibrosController {
     }
 
     @GetMapping("/detalle")
-    public String verDetalle(@RequestParam Long id, HttpSession session, Model model) {
+    public String verDetalle(@RequestParam Long id, Model model) {
         Libro libro = service.getLibroById(id);
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
         
         model.addAttribute("libro", libro);
         model.addAttribute("mediaValoracion", valoracionService.calcularMediaLibro(libro));
         model.addAttribute("numeroVotos", valoracionService.contarValoraciones(libro));
         
-        if (usuario != null) {
+        usuarioService.getUsuarioConectado().ifPresent(usuario -> {
             var valoracionUsuario = valoracionService.obtenerValoracion(usuario, libro);
             model.addAttribute("valoracionUsuario", valoracionUsuario.orElse(null));
-        }
+        });
         
         return "detalleLibro";
     }
@@ -165,4 +165,19 @@ public class LibrosController {
         return "formView";
     }
     
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/valoraciones")
+    public String verValoraciones(@RequestParam Long id, Model model) {
+        Libro libro = service.getLibroById(id);
+        model.addAttribute("libro", libro);
+        model.addAttribute("valoraciones", valoracionService.obtenerValoracionesLibro(libro));
+        return "valoracionesLibro";
+    }
+    
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/valoraciones/eliminar")
+    public String eliminarValoracion(@RequestParam Long valoracionId, @RequestParam Long libroId) {
+        valoracionService.eliminarValoracion(valoracionId);
+        return "redirect:/public/libros/valoraciones?id=" + libroId;
+    }
 }

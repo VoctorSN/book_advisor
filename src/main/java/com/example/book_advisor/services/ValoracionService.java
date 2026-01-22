@@ -1,5 +1,6 @@
 package com.example.book_advisor.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.example.book_advisor.model.Libro;
@@ -15,4 +16,10 @@ public interface ValoracionService {
     Double calcularMediaLibro(Libro libro);
     
     Long contarValoraciones(Libro libro);
+    
+    void eliminarValoracion(Usuario usuario, Libro libro);
+    
+    List<Valoracion> obtenerValoracionesLibro(Libro libro);
+    
+    void eliminarValoracion(Long id);
 }

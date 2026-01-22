@@ -129,7 +129,7 @@
                 <th>Autor</th>
                 <th>Sinopsis</th>
                 <th>Idioma</th>
-                <th>Acciones</th>
+                <th sec:authorize="hasRole('ADMIN')">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -152,7 +152,7 @@
                 <td th:text="${libro.autor}"></td>
                 <td th:text="${libro.sinopsis}"></td>
                 <td th:text="${libro.idioma}"></td>
-                <td>
+                <td sec:authorize="hasRole('ADMIN')">
                     <a th:href="@{/public/libros/modificar(id=${libro.id})}" class="btn btn-modificar">Modificar</a>
                     <a th:href="@{/public/libros/eliminar(id=${libro.id})}" class="btn btn-eliminar" 
                        onclick="return confirm('¿Estás seguro de eliminar este libro?')">Eliminar</a>
@@ -160,7 +160,7 @@
             </tr>
         </tbody>
     </table>
-    <a th:href="@{/public/libros/nuevo}" class="btn btn-nuevo">Nuevo Libro</a>
+    <a sec:authorize="hasRole('ADMIN')" th:href="@{/public/libros/nuevo}" class="btn btn-nuevo">Nuevo Libro</a>
 </body>
 
 </html>

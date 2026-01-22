@@ -34,8 +34,7 @@ public class GeneroController {
 
     @GetMapping("/modificar")
     public String mostrarFormularioModificar(@RequestParam Long id, Model model) {
-        Genero genero = generoService.obtenerPorId(id);
-        model.addAttribute("genero", genero);
+        model.addAttribute("genero", generoService.obtenerPorId(id));
         return "formGenero";
     }
 

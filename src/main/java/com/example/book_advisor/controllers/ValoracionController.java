@@ -1,5 +1,7 @@
 package com.example.book_advisor.controllers;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,9 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.book_advisor.model.Libro;
 import com.example.book_advisor.model.Usuario;
 import com.example.book_advisor.services.LibroService;
+import com.example.book_advisor.services.UsuarioService;
 import com.example.book_advisor.services.ValoracionService;
-
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/public/valoraciones")
@@ -23,21 +24,44 @@ public class ValoracionController {
     @Autowired
     private LibroService libroService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @PostMapping("/guardar")
     public String guardarValoracion(
             @RequestParam Long libroId,
             @RequestParam Integer puntuacion,
-            @RequestParam(required = false) String redirect,
-            HttpSession session) {
+            @RequestParam(required = false) String redirect) {
         
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        Optional<Usuario> usuario = usuarioService.getUsuarioConectado();
         
-        if (usuario == null) {
+        if (usuario.isEmpty()) {
             return "redirect:/auth/login";
         }
         
         Libro libro = libroService.getLibroById(libroId);
-        valoracionService.guardarValoracion(usuario, libro, puntuacion);
+        valoracionService.guardarValoracion(usuario.get(), libro, puntuacion);
+        
+        if ("detalle".equals(redirect)) {
+            return "redirect:/public/libros/detalle?id=" + libroId;
+        }
+        
+        return "redirect:/public/libros/";
+    }
+    
+    @PostMapping("/eliminar")
+    public String eliminarValoracion(
+            @RequestParam Long libroId,
+            @RequestParam(required = false) String redirect) {
+        
+        Optional<Usuario> usuario = usuarioService.getUsuarioConectado();
+        
+        if (usuario.isEmpty()) {
+            return "redirect:/auth/login";
+        }
+        
+        Libro libro = libroService.getLibroById(libroId);
+        valoracionService.eliminarValoracion(usuario.get(), libro);
         
         if ("detalle".equals(redirect)) {
             return "redirect:/public/libros/detalle?id=" + libroId;
